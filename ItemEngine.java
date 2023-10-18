@@ -10,7 +10,9 @@ public class ItemEngine implements Engine
     private Random random;
     private Scanner scan;
 
-    //Constructs the engine, as well as all the different types of items.
+    /**
+     * Constructs the engine, as well as all the different types of items.
+     */
     public ItemEngine()
     {
         random = new Random();
@@ -45,6 +47,7 @@ public class ItemEngine implements Engine
     
     /**
      * Begins a segment where the player can choose if they want to take a risk for a reward.
+     * @param hero The hero that's going to get an item.
      */
     public void interact(Hero hero)
     {
@@ -68,41 +71,14 @@ public class ItemEngine implements Engine
         return;
     }
     private void searchForItem(Hero hero){
-        int[] stats = hero.getStats();
+        //Get random item index
         int itemIndex = random.nextInt(items.length);
-        int[] changes = items[itemIndex].getStatChanges();
         
+        //Print that item's dialogue
         System.out.println(items[itemIndex].getDialogue());
         
-        if(changes[0] != 0){
-            System.out.print("HP: " + stats[0] + " + " + changes[0]);
-            System.out.print("/" + stats[1]);
-            if(changes[1] != 0){
-                System.out.print(" + " + changes[1]);
-            }
-            System.out.println();
-        }
-        else if(changes[1] != 0){
-            System.out.println("HP: " + stats[0] + "/" + stats[1] + " + " + changes[1]);
-        }
-        
-        if(changes[2] != 0){
-                System.out.println("ATK: " + stats[2] + " + " + changes[2]);
-        }
-        if(changes[3] != 0){
-                System.out.println("DEF: " + stats[3] + " + " + changes[3]);
-        }
-        if(changes[4] != 0){
-                System.out.println("SPD: " + stats[4] + " + " + changes[4]);
-        }
-        if(changes[5] != 0){
-                System.out.println("MONEY: " + stats[5] + " + " + changes[5]);
-        }
-            
-        for(int i = 0; i < stats.length; i++){
-            stats[i] += changes[i];
-        }
-        hero.setStats(stats);
+        //Change hero's stats with item
+        hero.changeStats(items[itemIndex]);
     }
     
     public String toString(){

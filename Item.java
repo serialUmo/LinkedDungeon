@@ -1,10 +1,15 @@
 /**
- * Holds dialogue, as well as an array of stat changes to feed to the Hero.
+ * An Item is an item or event that usually positively changes the Hero's stats.
  */
-public class Item
+public class Item implements StatChanger
 {
     private String dialogue;
-    private int[] statChanges;
+    private int hpChange;
+    private int maxHpChange;
+    private int atkChange;
+    private int defChange;
+    private int spdChange;
+    private int moneyChange;
 
     /**
      * Constructs an Item.
@@ -20,13 +25,26 @@ public class Item
     public Item(String text, int hp, int maxHp, int atk, int def, int spd, int money)
     {
         dialogue = text;
-        statChanges = new int[]{hp, maxHp, atk, def, spd, money};
+        hpChange = hp;
+        maxHpChange = maxHp;
+        atkChange = atk;
+        defChange = def;
+        spdChange = spd;
+        moneyChange = money;
     }
 
-    public String getDialogue(){
-        return dialogue;
-    }
-    public int[] getStatChanges(){
-        return statChanges;
-    }
+    public String getDialogue()
+    {return dialogue;}
+    public int getHPChange()
+    {return hpChange;}
+    public int getMaxHPChange()
+    {return maxHpChange;}
+    public int getATKChange()
+    {return atkChange;}
+    public int getDEFChange()
+    {return defChange;}
+    public int getSPDChange()
+    {return spdChange;}
+    public int getMoneyChange()
+    {return moneyChange;}
 }

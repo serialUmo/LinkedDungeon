@@ -1,14 +1,20 @@
 /**
- * Holds a name of a ware, as well as an array of stat changes to feed to the Hero.
+ * A Ware is something the Hero will buy with MONEY that will change their stats.
  */
-public class Ware
+public class Ware implements StatChanger
 {
     private String name;
-    private int[] statChanges;
+    private int hpChange;
+    private int maxHpChange;
+    private int atkChange;
+    private int defChange;
+    private int spdChange;
+    private int moneyChange;
 
     /**
-     * Constructs an Item.
+     * Constructs a Ware.
      * @param name What the name of the ware is.
+     * 
      * @param hp How much to change the Hero's HP.
      * @param maxHp How much to change the Hero's maximum HP.
      * @param atk How much to change the Hero's attack.
@@ -19,16 +25,27 @@ public class Ware
     public Ware(String text, int hp, int maxHp, int atk, int def, int spd, int money)
     {
         name = text;
-        statChanges = new int[]{hp, maxHp, atk, def, spd, money};
+        hpChange = hp;
+        maxHpChange = maxHp;
+        atkChange = atk;
+        defChange = def;
+        spdChange = spd;
+        moneyChange = money;
     }
 
     public String getName(){
         return name;
     }
-    public int getCost(){
-        return statChanges[5];
-    }
-    public int[] getStatChanges(){
-        return statChanges;
-    }
+    public int getHPChange()
+    {return hpChange;}
+    public int getMaxHPChange()
+    {return maxHpChange;}
+    public int getATKChange()
+    {return atkChange;}
+    public int getDEFChange()
+    {return defChange;}
+    public int getSPDChange()
+    {return spdChange;}
+    public int getMoneyChange()
+    {return moneyChange;}
 }

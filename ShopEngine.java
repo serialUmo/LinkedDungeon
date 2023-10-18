@@ -9,20 +9,22 @@ public class ShopEngine implements Engine
     private Random random;
     private Scanner scan;
     
-    //Constructs the engine, as well as all the possible wares to buy.
+    /**
+     * Constructs the engine, as well as all the possible wares to buy.
+     */
     public ShopEngine()
     {
         random = new Random();
         scan = new Scanner(System.in);
         
-        Ware[] wares =
+        wares = new Ware[]
         {          // NAME,                 HP   mHP   ATK   DEF   SPD   MONEY
             new Ware("HP Potion",           20,    0,    0,    0,    0,    -30),
             new Ware("Greater HP Potion",   50,    0,    0,    0,    0,    -60),
             new Ware("Vigor Potion",       100,   20,    0,    0,    0,   -111),
             new Ware("Armor Upgrade",       20,    0,    0,   10,    0,   -100),
             new Ware("Sword Upgrade",        0,    0,    5,    0,    0,    -75),
-            new Ware("Speed Drink",          5,    0,    0,    0,    3,    -50),
+            new Ware("Speed Drink",          5,    0,    0,    0,    3,    -50)
         };
         
         freebie = new Ware("Small Candy", 10, 0, 0, 0, 0, 0);
@@ -30,6 +32,7 @@ public class ShopEngine implements Engine
 
     /**
      * Begins a shopping segment where the player may buy wares.
+     * @param hero The hero who's going to be buying.
      */
     public void interact(Hero hero){
         System.out.println("The entrance to this room is strangely well-lit and rustic. The environment changes to something similar to that of a cabin.\n"+
@@ -38,7 +41,7 @@ public class ShopEngine implements Engine
         int count = 0;   
         while(true){
             for(int i = 1; i <= wares.length; i++){
-                System.out.println(i + ") " + wares[i-1].getName() + " $" + wares[i-1].getCost());
+                System.out.println(i + ") " + wares[i-1].getName() + " ~ $" + (-1 * wares[i-1].getMoneyChange()));
             }
             System.out.println("MONEY: " + hero.getMoney());
             System.out.println("(type any number from 1 to " + wares.length + " to buy. type '0' to exit shop.");
@@ -67,50 +70,21 @@ public class ShopEngine implements Engine
                 return;
             }
             
-            if(hero.getMoney() < wares[input].getCost()){
+            if(hero.getMoney() < (-1 * wares[input - 1].getMoneyChange())){
                 System.out.println("You don't have enough for that!");
             }
             else{
-                buy(hero, wares[input]);
+                buy(hero, wares[input - 1]);
                 count++;
             }
         }
     }
     private void buy(Hero hero, Ware ware){
-        int[] stats = hero.getStats();
-        int[] changes = ware.getStatChanges();
-        
+        //Print purchase dialogue.
         System.out.println("You bought the " + ware.getName() + ".");
         
-        if(changes[0] != 0){
-            System.out.print("HP: " + stats[0] + " + " + changes[0]);
-            System.out.print("/" + stats[1]);
-            if(changes[1] != 0){
-                System.out.print(" + " + changes[1]);
-            }
-            System.out.println();
-        }
-        else if(changes[1] != 0){
-            System.out.println("HP: " + stats[0] + "/" + stats[1] + " + " + changes[1]);
-        }
-        
-        if(changes[2] != 0){
-                System.out.println("ATK: " + stats[2] + " + " + changes[2]);
-        }
-        if(changes[3] != 0){
-                System.out.println("DEF: " + stats[3] + " + " + changes[3]);
-        }
-        if(changes[4] != 0){
-                System.out.println("SPD: " + stats[4] + " + " + changes[4]);
-        }
-        if(changes[5] != 0){
-                System.out.println("MONEY: " + stats[5] + " - " + (-1 * changes[5]));
-        }
-            
-        for(int i = 0; i < stats.length; i++){
-            stats[i] += changes[i];
-        }
-        hero.setStats(stats);
+        //Change hero's stats with the purchased item.
+        hero.changeStats(ware);
     }
     
     public String toString(){
