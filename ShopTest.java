@@ -4,7 +4,7 @@ public class ShopTest
     {
         ShopEngine shop = new ShopEngine();
         Hero hero = new Hero();
-        hero.setMoney(100);
+        hero.setMoney(1000);
         
         shop.interact(hero);
     }

@@ -9,4 +9,5 @@ public interface StatChanger
     public int getDEFChange();
     public int getSPDChange();
     public int getMoneyChange();
+    public boolean isBlank();
 }

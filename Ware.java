@@ -48,4 +48,13 @@ public class Ware implements StatChanger
     {return spdChange;}
     public int getMoneyChange()
     {return moneyChange;}
+    
+    public boolean isBlank(){
+        if((hpChange != 0) || (maxHpChange != 0) || (atkChange != 0) || (defChange != 0) || (spdChange != 0) || (moneyChange != 0)){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
 }

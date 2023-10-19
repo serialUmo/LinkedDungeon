@@ -19,12 +19,12 @@ public class ShopEngine implements Engine
         
         wares = new Ware[]
         {          // NAME,                 HP   mHP   ATK   DEF   SPD   MONEY
-            new Ware("HP Potion",           20,    0,    0,    0,    0,    -30),
-            new Ware("Greater HP Potion",   50,    0,    0,    0,    0,    -60),
+            new Ware("HP Potion",           25,    0,    0,    0,    0,    -30),
+            new Ware("Greater HP Potion",   50,    0,    0,    0,    0,    -55),
             new Ware("Vigor Potion",       100,   20,    0,    0,    0,   -111),
-            new Ware("Armor Upgrade",       20,    0,    0,   10,    0,   -100),
-            new Ware("Sword Upgrade",        0,    0,    5,    0,    0,    -75),
-            new Ware("Speed Drink",          5,    0,    0,    0,    3,    -50)
+            new Ware("Armor Upgrade",        0,    0,    0,    2,    0,    -65),
+            new Ware("Sword Upgrade",        0,    0,    3,    0,    0,    -70),
+            new Ware("Speed Drink",         10,    0,    0,    0,    3,    -50)
         };
         
         freebie = new Ware("Small Candy", 10, 0, 0, 0, 0, 0);
@@ -36,19 +36,31 @@ public class ShopEngine implements Engine
      */
     public void interact(Hero hero){
         System.out.println("The entrance to this room is strangely well-lit and rustic. The environment changes to something similar to that of a cabin.\n"+
-                           "A silent, shadowy figure motions to you from behind a counter. It points you towards a selection of goods and services.");
+                           "A silent, shadowy figure motions to you from behind a counter. It points you towards a selection of goods and services.\n");
         
         int count = 0;   
         while(true){
+            System.out.println("<>=-=-={SHOP}=-=-=<>");
             for(int i = 1; i <= wares.length; i++){
                 System.out.println(i + ") " + wares[i-1].getName() + " ~ $" + (-1 * wares[i-1].getMoneyChange()));
             }
+            System.out.println("<>=-=-=-=<>=-=-=-=<>");
+            
             System.out.println("MONEY: " + hero.getMoney());
-            System.out.println("(type any number from 1 to " + wares.length + " to buy. type '0' to exit shop.");
+            System.out.println("(type 1 to " + wares.length + " to buy. type '0' to exit shop. type 'S' for STATS.)");
             
             int input; 
             do{
-                input = scan.nextInt();
+                String command = scan.nextLine();
+                try{
+                    input = Integer.parseInt(command);
+                }
+                catch(NumberFormatException e){
+                    if(command.equalsIgnoreCase("S")){
+                        hero.printStats();
+                    }
+                    input = -1;
+                }
             }
             while((input > wares.length) || (input < 0));
             
@@ -67,17 +79,27 @@ public class ShopEngine implements Engine
                         buy(hero, freebie);
                     }
                 }
+                
+                System.out.println("You move on with your journey.");
+                if(hero.getHP() == 0){
+                    System.out.println("As you leave, you feel a sudden pain in your chest!\n"+
+                                       "You feel as though your purchases weren't very wise...!");
+                    System.out.println("[SOMETHING IN THE CEILING IS LAUGHING HYSTERICALLY]");
+                }
+                System.out.println();
                 return;
             }
             
             if(hero.getMoney() < (-1 * wares[input - 1].getMoneyChange())){
-                System.out.println("You don't have enough for that!");
+                System.out.println("You don't have enough for that!\n");
             }
             else{
                 buy(hero, wares[input - 1]);
                 count++;
             }
         }
+        
+        
     }
     private void buy(Hero hero, Ware ware){
         //Print purchase dialogue.
@@ -87,7 +109,7 @@ public class ShopEngine implements Engine
         hero.changeStats(ware);
     }
     
-    public String toString(){
-        return "$";
+    public String getMapIcon(){
+        return "S";
     }
 }

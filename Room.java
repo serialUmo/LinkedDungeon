@@ -3,8 +3,12 @@ public class Room <E>
     private Engine event;
     private Room next;
     
+    private String mapIcon;
+    private boolean explored;
+    
     public Room(Engine type){
-        event = type;   
+        event = type;
+        explored = false;
     }
     
     public Room getNext(){
@@ -16,9 +20,15 @@ public class Room <E>
     
     public void interact(Hero hero){
         event.interact(hero);
+        
+        mapIcon = mapIcon.toLowerCase();
+        explored = true;
     }
     
+    public boolean isExplored(){
+        return explored;
+    }
     public String toString(){
-        return event.toString();
+        return mapIcon;
     }
 }

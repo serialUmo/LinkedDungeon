@@ -8,24 +8,26 @@ public class BattleEngine implements Engine
 {
     private EnemyKind[] enemies;
     
-    private int difficulty;
+    private static int difficulty;
     
     private Random random;
     private Scanner scan;
     
-    //Constructs the engine, as well as all the different types of monsters.
+    /**
+     * Constructs the engine, as well as all the different types of monsters.
+     */
     public BattleEngine()
     {
         random = new Random();
         scan = new Scanner(System.in);
         difficulty = 0;
         
-        EnemyKind[] enemies =
-        {               // KIND                 HP   ATK   DEF   SPD   MONEY
-            new EnemyKind("Shadow",              1,    1,    0,    0,      0),
-            new EnemyKind("Imp",                 8,    5,    0,    5,     12),
-            new EnemyKind("Lymph Construct",    11,    3,    1,    2,     30),
-            new EnemyKind("Minotaur",           50,   10,    2,    3,     10),
+        enemies = new EnemyKind[]
+        {               // KIND                 HP   ATK   DEF   SPD   MONEY   EXP
+            new EnemyKind("Shadow",              1,    1,    0,    0,      0,    0),
+            new EnemyKind("Imp",                 8,    5,    0,    5,     12,    5),
+            new EnemyKind("Lymph Construct",    11,    3,    1,    2,     30,    9),
+            new EnemyKind("Minotaur",           50,   10,    2,    3,     10,   25),
         };
     }
     
@@ -35,6 +37,8 @@ public class BattleEngine implements Engine
      */
     public void interact(Hero hero)
     {
+        Enemy enemy = new Enemy(enemies[random.nextInt(enemies.length)], difficulty);
+        enemy.printStats();
         return;
     }
     
@@ -45,6 +49,8 @@ public class BattleEngine implements Engine
      */
     public void interact(Hero hero, int enemyIndex)
     {
+        Enemy enemy = new Enemy(enemies[enemyIndex], difficulty);
+        enemy.printStats();
         return;
     }
     
@@ -55,8 +61,11 @@ public class BattleEngine implements Engine
     public void incrementDifficulty(){
         difficulty++;
     }
+    public void setDifficulty(int newDifficulty){
+        difficulty = newDifficulty;
+    }
     
-    public String toString(){
+    public String getMapIcon(){
         return "B";
     }
 }

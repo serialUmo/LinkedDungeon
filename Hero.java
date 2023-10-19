@@ -1,4 +1,5 @@
-public class Hero
+import java.util.Random;
+public class Hero implements Entity
 {
     private String name;
     private int hp;
@@ -8,12 +9,20 @@ public class Hero
     private int spd;
     private int money;
     
+    private int lvl;
+    private int exp;
+    private int expNext;
+    
     //private boolean defending;
+    
+    private Random random;
     
     /**
      * Constructs a Hero object with default stats.
      */
     public Hero (){
+        random = new Random();
+        
         name = "Stranger";
         hp = 100;
         maxHp = 100;
@@ -21,6 +30,10 @@ public class Hero
         def = 10;
         spd = 10;
         money = 0;
+        
+        lvl = 0;
+        exp = 0;
+        expNext = 10;
     }
     
     /**
@@ -32,8 +45,11 @@ public class Hero
      * @param def How much damage is mitigated when attacked by a Monster.
      * @param spd When this value is higher than a Monster's, the hero attacks first.
      * @param money How much money the hero starts with.
+     * @param firstLvlCost How much EXP is needed to level up. A low value will generally have faster initial leveling.
      */
-    public Hero (String name, int hp, int maxHp, int atk, int def, int spd, int money){
+    public Hero (String name, int hp, int maxHp, int atk, int def, int spd, int money, int firstLvlCost){
+        random = new Random();
+        
         this.name = name;
         this.hp = hp;
         this.maxHp = maxHp;
@@ -44,11 +60,15 @@ public class Hero
         this.def = def;
         this.spd = spd;
         this.money = money;
+        
+        lvl = 0;
+        exp = 0;
+        expNext = firstLvlCost;
     }
     
     //---Battle Functions---
     /**
-     * Decreases HP by a DAMAGE value, which is mitigated by DEFENSE.
+     * Decreases HP by an ATK value, which is mitigated by DEF.
      * @param dmg How much health to take away.
      */
     public void damage(int dmg){
@@ -67,11 +87,32 @@ public class Hero
     }
     
     /**
-     * Has the Hero attack a Monster.
-     * @param enemy What enemy to attack.
+     * Has the Hero attack an Entity.
+     * @param target What entity to attack.
      */
-    public void attack(Enemy enemy){
-        enemy.damage(atk);
+    public void attack(Entity target){
+        int attack = atk + ((random.nextInt(Math.abs(atk))/3) - atk/4);
+        target.damage(attack);
+    }
+    
+    /**
+     * Increases the hero's stats per level.
+     */
+    public void levelUp(){
+        if(exp < expNext){
+            return;
+        }
+        
+        for (int i = 1; i < lvl; i++){
+            maxHp += 2 + random.nextInt(5) + (maxHp*0.05);
+            atk += 1 + random.nextInt(3) + (atk*0.1);
+            def += 1 + random.nextInt(3) + (def*0.1);
+            spd += 1 + random.nextInt(3) + (spd*0.1);
+            money += 5 + (money * (Math.random() * 0.5));
+            expNext += 5 + (expNext * (Math.random() * 0.5));
+        }
+        hp = maxHp;
+        exp = 0;
     }
     
     //Getters
@@ -89,6 +130,10 @@ public class Hero
     {return spd;}
     public int getMoney()
     {return money;}
+    public int getLvl()
+    {return lvl;}
+    public int getExp()
+    {return exp;}
     
     //Setters
     public void setName(String newName)
@@ -105,12 +150,19 @@ public class Hero
     {spd = newSpd;}
     public void setMoney(int newMoney)
     {money = newMoney;}
+    public void setExp(int newExp)
+    {exp = newExp;}
     
     /**
      * Applies an array of stat changes to the hero's stats. Also prints the changed stats, and by how much.
      * @param statChanger The StatChanger that will affect the stats.
      */
     public void changeStats(StatChanger statChanger){
+        if(statChanger.isBlank()){
+            System.out.println();
+            return;
+        }
+        
         int hpChange = statChanger.getHPChange();
         int maxHpChange = statChanger.getMaxHPChange();
         int atkChange = statChanger.getATKChange();
@@ -119,59 +171,79 @@ public class Hero
         int moneyChange = statChanger.getMoneyChange();
         
         System.out.println("=+=======STATS=======+=");
+        
         //HP, max HP
-        if(hpChange != 0){
-            System.out.print("HP: (" + hp + " + " + hpChange);
-            System.out.print(")/");
-            if(maxHpChange != 0){
-                System.out.print("(" + maxHp + " + " + maxHpChange + ")");
-            }
-            else{
-                System.out.print(maxHp);
-            }
-            System.out.println();
+        if(hpChange == 0 && maxHpChange != 0){
+            System.out.print("HP: " + hp);
         }
-        else if(maxHpChange != 0){
-            System.out.println("HP: " + hp + "/(" + maxHp + " + " + maxHpChange +")");
+        else if(hpChange > 0){
+            System.out.print("HP: (" + hp + " + " + hpChange + " = " + Math.min(Math.max(hp + hpChange, 0), maxHp + maxHpChange) + ")");
         }
-        hp = Math.min(Math.max(hp + hpChange, 0), maxHp);
+        else if(hpChange < 0){
+            System.out.print("HP: (" + hp + " - " + -1*hpChange + " = " + Math.min(Math.max(hp + hpChange, 0), maxHp + maxHpChange) + ")");
+        }
+        
+        if(hpChange != 0 && maxHpChange == 0){
+            System.out.println("/" + maxHp);
+        }
+        else if(maxHpChange > 0){
+            System.out.println("/(" + maxHp + " + " + maxHpChange + " = " + Math.max(maxHp + maxHpChange, 0) + ")");
+        }
+        else if(maxHpChange < 0){
+            System.out.println("/(" + maxHp + " - " + -1*maxHpChange + " = " + Math.max(maxHp + maxHpChange, 0) + ")");
+        }
         maxHp = Math.max(maxHp + maxHpChange, 0);
+        hp = Math.min(Math.max(hp + hpChange, 0), maxHp);
         
         //ATK
-        if(atkChange != 0){
-            System.out.println("ATK: " + atk + " + " + atkChange);
+        if(atkChange > 0){
+            System.out.println("ATK: " + atk + " + " + atkChange + " = " + (atk+atkChange));
+        }
+        if(atkChange < 0){
+            System.out.println("ATK: " + atk + " - " + -1*atkChange + " = " + (atk+atkChange));
         }
         atk += atkChange;
         
         //DEF
-        if(defChange != 0){
-            System.out.println("DEF: " + def + " + " + defChange);
+        if(defChange > 0){
+            System.out.println("DEF: " + def + " + " + defChange + " = " + (def+defChange));
+        }
+        if(defChange < 0){
+            System.out.println("DEF: " + def + " - " + -1*defChange + " = " + (def+defChange));
         }
         def += defChange;
         
         //SPD
-        if(spdChange != 0){
-            System.out.println("SPD: " + spd + " + " + spdChange);
+        if(spdChange > 0){
+            System.out.println("SPD: " + spd + " + " + spdChange + " = " + (spd+spdChange));
+        }
+        if(spdChange < 0){
+            System.out.println("SPD: " + spd + " - " + -1*spdChange + " = " + (spd+spdChange));
         }
         spd += spdChange;
         
         //MONEY
-        if(moneyChange != 0){
-            System.out.println("MONEY: " + money + " + " + moneyChange);
+        if(moneyChange > 0){
+            System.out.println("MONEY: " + money + " + " + moneyChange + " = " + Math.max(money + moneyChange, 0));
         }
-        System.out.println("=+=======-----=======+=");
+        if(moneyChange < 0){
+            System.out.println("MONEY: " + money + " - " + -1*moneyChange + " = " + Math.max(money + moneyChange, 0));
+        }
         money = Math.max(money + moneyChange, 0);
+        
+        System.out.println("=+=======-----=======+=\n");
     }
     
     /**
-     * Returns a string of the hero's stats.
+     * Prints the hero's stats.
      */
-    public String toString(){
-        String stats = "HP: " + hp +" / "+ maxHp + "\n" +
-                       "ATK: " + atk  + "\n" +
-                       "DEF: " + def + "\n" +
-                       "SPD: " + spd + "\n" +
-                       "MONEY: " + money;
-        return stats;
+    public void printStats(){
+        System.out.println("=+=======STATS=======+=");
+        System.out.println("HP: " + hp +" / "+ maxHp + "\n" +
+                           "ATK: " + atk  + "\n" +
+                           "DEF: " + def + "\n" +
+                           "SPD: " + spd + "\n" +
+                           "MONEY: " + money);
+        System.out.println("=+=======-----=======+=\n");
     }
 }

@@ -1,7 +1,7 @@
 /**
- * An Item is an item or event that usually positively changes the Hero's stats.
+ * An Trap is an item or event that usually negatively changes the Hero's stats.
  */
-public class Item implements StatChanger
+public class Trap implements StatChanger
 {
     private String dialogue;
     private int hpChange;
@@ -12,7 +12,7 @@ public class Item implements StatChanger
     private int moneyChange;
 
     /**
-     * Constructs an Item.
+     * Constructs a Trap.
      * @param text What to print out when interacted with.
      * 
      * @param hp How much to change the Hero's HP.
@@ -22,7 +22,7 @@ public class Item implements StatChanger
      * @param spd How much to change the Hero's speed.
      * @param money How much to change the Hero's money.
      */
-    public Item(String text, int hp, int maxHp, int atk, int def, int spd, int money)
+    public Trap(String text, int hp, int maxHp, int atk, int def, int spd, int money)
     {
         dialogue = text;
         hpChange = hp;
