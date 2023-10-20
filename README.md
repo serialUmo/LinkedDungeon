@@ -10,11 +10,11 @@ You endlessly descend as you hopelessly try and find your way out!
 Input instructions are given to you once you start playing, so you won't need to worry.
 
 ### STATS:
-HP: How much health you have. When HP < 0, it's game over!
-ATK: How much damage you deal to monsters!
-DEF: How much damage taken you reduce!
-SPD: How fast you are! If you're faster than an enemy, you attack first!
-MONEY: How loaded your pockets are! You can spend money at shops to get nice boons to help you die later rather than sooner!
+- HP: How much health you have. When HP < 0, it's game over!
+- ATK: How much damage you deal to monsters!
+- DEF: How much damage taken you reduce!
+- SPD: How fast you are! If you're faster than an enemy, you attack first!
+- MONEY: How loaded your pockets are! You can spend money at shops to get nice boons to help you die later rather than sooner!
 
 ### STUFF:
 There's MONSTERS! Fight 'em!
