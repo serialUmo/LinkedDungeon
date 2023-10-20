@@ -6,6 +6,7 @@ public class ShopTest
         Hero hero = new Hero();
         hero.setMoney(1000);
         
-        shop.interact(hero);
+        shop.interact(hero, false);
+        shop.interact(hero, true);
     }
 }

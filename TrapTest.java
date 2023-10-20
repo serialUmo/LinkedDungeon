@@ -5,8 +5,9 @@ public class TrapTest
         TrapEngine trap = new TrapEngine();
         Hero hero = new Hero();
         
-        for(int i = 0; i < 10; i++){
-            trap.interact(hero);
+        for(int i = 0; i < 5; i++){
+            trap.interact(hero, false);
         }
+        trap.interact(hero, true);
     }
 }

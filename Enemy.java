@@ -62,11 +62,21 @@ public class Enemy implements Entity
     
     //---Battle Functions---
     /**
+     * Has the Monster attack an Entity.
+     * @param target What entity to attack.
+     */
+    public void attack(Entity target){
+        int attack = atk/((target.getDEF()+10)/10) + random.nextInt(4);
+        target.damage(attack);
+    }
+    
+    /**
      * Decreases HP by an ATK value, which is mitigated by DEF.
      * @param dmg How much health to take away.
      */
     public void damage(int dmg){
-        hp -= Math.max(dmg - def, 0);
+        System.out.println(name.toUpperCase() + "'s HP: (" + hp + " - " + dmg + " = " + (hp - dmg) + ")/" + maxHp);
+        hp -= Math.max(dmg, 0);
     }
     
     /**
@@ -81,15 +91,6 @@ public class Enemy implements Entity
     }
     
     /**
-     * Has the Monster attack an Entity.
-     * @param target What entity to attack.
-     */
-    public void attack(Entity target){
-        int attack = atk + ((random.nextInt(Math.abs(atk))/3) - atk/4);
-        target.damage(attack);
-    }
-
-    /**
      * Increases the monster's stats depending on its level.
      */
     public void levelUp(){
@@ -99,7 +100,7 @@ public class Enemy implements Entity
             def += 1 + random.nextInt(3) + (def*0.1);
             spd += 1 + random.nextInt(3) + (spd*0.1);
             money += 5 + (money * (Math.random() * 0.5));
-            exp += 5 + (exp * (Math.random() * 0.75));
+            exp += 5 + (exp * (Math.random() * 0.25));
         }
         hp = maxHp;
     }
@@ -148,12 +149,12 @@ public class Enemy implements Entity
     public void printStats(){
         System.out.println(">>===[ENEMY=STATS]===<<");
         System.out.println("Lv." + lvl + "\t\t" + kind.getName() + "\n" +
+                           "EXP: " + exp + "\n\n" +
                            "HP: " + hp +" / "+ maxHp + "\n" +
                            "ATK: " + atk  + "\n" +
                            "DEF: " + def + "\n" +
                            "SPD: " + spd + "\n" +
-                           "MONEY: " + money + "\n" +
-                           "EXP DROPPED: " + exp);
+                           "MONEY: " + money);
         System.out.println("=={=====--   --=====}==\n");
     }
 }

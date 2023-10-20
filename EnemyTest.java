@@ -1,3 +1,4 @@
+import java.util.Scanner;
 public class EnemyTest
 {
     public static void main(String[] args)
@@ -5,9 +6,13 @@ public class EnemyTest
         BattleEngine battle = new BattleEngine();
         Hero hero = new Hero();
         
-        for(int i = 0; i < 10; i++){
-            battle.interact(hero, 3);
+        Scanner scan = new Scanner(System.in);
+        
+        for(int i = 0; i < 7; i++){
+            hero.setExiting(true);
             battle.incrementDifficulty();
+            battle.interact(hero, false);
         }
+        battle.interact(hero, true);
     }
 }

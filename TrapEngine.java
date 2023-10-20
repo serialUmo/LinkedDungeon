@@ -51,9 +51,15 @@ public class TrapEngine implements Engine
     /**
      * Begins a segment where the player can choose if they want to take a certain risk, or the possibility of safety.
      * @param hero The hero that's going to suffer through a trap.
+     * @param explored If the room has already been visited.
      */
-    public void interact(Hero hero)
+    public void interact(Hero hero, boolean explored)
     {
+        if(explored){
+            System.out.println("You retrace the steps you took to ensure you don't trigger any more traps in this room.");
+            return;
+        }
+        
         System.out.println("As you enter the next room, you come to a halt.\n"+
                            "Ahead of you lies a fork in the road. The left path is bloodied, and the right is dark.\n"+
                            "Instinct tells you that there's definitely a trap to the left, but something worse may lurk in the dark.\n"+
@@ -81,44 +87,49 @@ public class TrapEngine implements Engine
         
         if(input == 1){
             System.out.println("Favoring the certainty, you brave the bloody path.\n");
+            hero.pressToContinue();
             sufferTrap(hero);
         }
         else{
             System.out.println("Favoring the possibility of safety, you enter the dark.\n");
+            hero.pressToContinue();
             
             int misfortune = random.nextInt(5) + 1;
             if(misfortune < 3){
                 System.out.println("You reach the end of the darkness unscathed!");
-                System.out.println();
+                hero.pressToContinue();
                 return;
             }
             else if(misfortune == 3){
                 sufferTrap(hero);
                 System.out.println("You try your best to try and reach the end of this cursed path...");
+                hero.pressToContinue();
             }
             else if(misfortune == 4){
                 System.out.println("You fumble your way through the darkness until you hear a murmur.");
-                darkPathBattle.interact(hero);
+                hero.pressToContinue();
+                darkPathBattle.interactQuiet(hero);
             }
             else if(misfortune == 5){
                 sufferTrap(hero);
                 System.out.println("You try your best to try and reach the end of this cursed path...");
-                if(hero.getHP() == 0){
+                if(hero.getHP() <= 0){
                     System.out.println("[BUT DARKER AND DARKER SHADOWS SUFFOCATE YOU]");
-                    System.out.println();
+                    hero.pressToContinue();
                     return;
                 }
                 System.out.println("...but just when you think you've reached the end...!");
-                darkPathBattle.interact(hero);
+                hero.pressToContinue();
+                darkPathBattle.interactQuiet(hero);
             }
         }
         
         System.out.println("You've managed to finally reach the end of the path... The next room lies ahead.");
-        if(hero.getHP() == 0){
+        if(hero.getHP() <= 0){
             System.out.println("...but you longer have the energy to go on. Maybe you can catch a breath...?");
             System.out.println("[A HORRIFYING ROAR CAN BE HEARD UNDER THE FLOOR WHERE YOU LIE]");
+            hero.pressToContinue();
         }
-        System.out.println();
         return;
     }
     private void sufferTrap(Hero hero){
@@ -130,6 +141,7 @@ public class TrapEngine implements Engine
         
         //Change hero's stats with trap
         hero.changeStats(traps[trapIndex]);
+        hero.incrementTraps();
     }
     
     public String getMapIcon(){

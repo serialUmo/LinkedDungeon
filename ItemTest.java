@@ -5,8 +5,9 @@ public class ItemTest
         ItemEngine item = new ItemEngine();
         Hero hero = new Hero();
         
-        for(int i = 0; i < 10; i++){
-            item.interact(hero);
+        for(int i = 0; i < 5; i++){
+            item.interact(hero, false);
         }
+        item.interact(hero, true);
     }
 }

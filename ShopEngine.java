@@ -33,8 +33,14 @@ public class ShopEngine implements Engine
     /**
      * Begins a shopping segment where the player may buy wares.
      * @param hero The hero who's going to be buying.
+     * @param explored If the room has already been visited.
      */
-    public void interact(Hero hero){
+    public void interact(Hero hero, boolean explored){
+        if(explored){
+            System.out.println("All the lights in the shop have gone out, and the shopkeeper is nowhere to be seen.");
+            return;
+        }
+        
         System.out.println("The entrance to this room is strangely well-lit and rustic. The environment changes to something similar to that of a cabin.\n"+
                            "A silent, shadowy figure motions to you from behind a counter. It points you towards a selection of goods and services.\n");
         
@@ -47,10 +53,10 @@ public class ShopEngine implements Engine
             System.out.println("<>=-=-=-=<>=-=-=-=<>");
             
             System.out.println("MONEY: " + hero.getMoney());
-            System.out.println("(type 1 to " + wares.length + " to buy. type '0' to exit shop. type 'S' for STATS.)");
             
             int input; 
             do{
+                System.out.println("(type 1 to " + wares.length + " to buy. type '0' to exit shop. type 'S' for STATS.)");
                 String command = scan.nextLine();
                 try{
                     input = Integer.parseInt(command);
@@ -63,6 +69,7 @@ public class ShopEngine implements Engine
                 }
             }
             while((input > wares.length) || (input < 0));
+            System.out.println();
             
             if(input == 0){
                 if(count != 0){
@@ -81,12 +88,12 @@ public class ShopEngine implements Engine
                 }
                 
                 System.out.println("You move on with your journey.");
-                if(hero.getHP() == 0){
+                if(hero.getHP() <= 0){
                     System.out.println("As you leave, you feel a sudden pain in your chest!\n"+
                                        "You feel as though your purchases weren't very wise...!");
                     System.out.println("[SOMETHING IN THE CEILING IS LAUGHING HYSTERICALLY]");
+                    hero.pressToContinue();
                 }
-                System.out.println();
                 return;
             }
             
@@ -107,6 +114,7 @@ public class ShopEngine implements Engine
         
         //Change hero's stats with the purchased item.
         hero.changeStats(ware);
+        hero.incrementWares();
     }
     
     public String getMapIcon(){
