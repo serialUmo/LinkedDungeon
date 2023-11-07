@@ -181,7 +181,7 @@ public class Hero implements Entity
             
             
         }
-        hp += maxHp/2;
+        hp = Math.min(maxHp, hp + maxHp/2);
         System.out.println("=+=======<O>=======+=");
         pressToContinue();      
     }
